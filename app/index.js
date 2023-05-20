@@ -53,13 +53,13 @@ async function createPvChatroom(thisUserId, anotherUserId) {
     const newPvChatroom = new ChatroomModel({
         type: "PV",
         members: [thisUserId, anotherUserId],
-        title: anotherUser.name
+        title: ""
     });
     const createdChatroom = await newPvChatroom.save();
     console.log("PV chatroom created", createdChatroom);
 
 }
-//createPvChatroom("64500e9eb1f35f844d5f6125","64500f4eb1f35f844d5f6129");
+//createPvChatroom("64626fd1d7b6aa16fabe1085","646272ccb1d7db90ecfff9b8");
 
 async function createTextMessage(text, userId, chatroomId) {
     const newMessage = new MessageModel({
@@ -72,7 +72,7 @@ async function createTextMessage(text, userId, chatroomId) {
     console.log("message created", createdMessage);
 }
 
-//createTextMessage("salam","64500e9eb1f35f844d5f6125","645a592c228e7a511bc28c46");
+//createTextMessage("khoobi?","646272ccb1d7db90ecfff9b8","64668c96a18790707b10e452");
 
 async function createContact(userId, name, mobile) {
     const foundUser = await UserModel.find({ mobile: mobile });
@@ -114,7 +114,7 @@ async function isContact(userId, mobile) {
 }
 
 
-//createContact("64595424fbfce9e0b7873374","mahshid","09155037651");
+//createContact("64626fe5d7b6aa16fabe1088","elahe","09151232765");
 
 
 async function removeContact(userId, contactId) {
@@ -138,6 +138,8 @@ async function editContact(userId, contactId, name, mobile) {
     process.exit();
 }
 //editContact("64595424fbfce9e0b7873374","645bf79541d28a32514df9dd","mahshid","09155037651");
+
+
 
 
 module.exports = Application;

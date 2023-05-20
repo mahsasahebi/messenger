@@ -3,7 +3,7 @@ Joi.objectId=require('joi-objectid')(Joi);
 
 const loginValidator = (data)=>{
     const schema = Joi.object({
-        mobile : Joi.string().required(),
+        mobile : Joi.string().length(11).required(),
         password : Joi.string().required()
     });
     return schema.validate(data);
