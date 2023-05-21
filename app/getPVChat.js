@@ -15,15 +15,15 @@ async function getPVChat(userId) {
     let mobileObj;
     let mobile;
     let contacts;
-    let flag = 0;
+    
     let name;
 
     for (let i = 0; i < chats.length; i++) {
-        
+        flag = 0;
         chatroom = chats[i].chatroomId;
         
         if (chatroom != null) {
-            
+            //flag = 0;
             for (let j = 0; j < 2; j++) {
                 
                 if (String(chatroom.members[j]) != String(userId)) {
@@ -39,13 +39,14 @@ async function getPVChat(userId) {
                     contacts = user.contacts;
 
                     console.log(contacts);
-                    // console.log(contacts.length);
+                    
 
 
                    
                     for (let k = 0; k < contacts.length; k++) {
 
                         if (contacts[k].mobile == mobile) {
+                            flag = 1;
                             chatlist.push(contacts[k].name);
                             break;
                         }
@@ -54,23 +55,18 @@ async function getPVChat(userId) {
                         
                     }
                         
-                        chatlist.push(mobile);
-                        
-
-                    
-                        
-
-
-
-
-
-
-
+                            
+      
                 }
+                else
+                    continue;
             }
         }
-
-
+        else
+            continue;
+        console.log(flag);
+        if(flag == 0)
+            chatlist.push(mobile);
 
     }
 
@@ -80,18 +76,8 @@ async function getPVChat(userId) {
     return chatlist;
 }
 
-// async function getContactName(userId, mobile) {
-//     const existContacts = await UserModel.find({ _id: userId, contacts: { $elemMatch: { mobile: mobile } } }, { contacts: { name: 1 }, _id: 0 });
-//     let contact = existContacts.name;
-//     //let contactName=contact.name;
 
 
-//     return contact;
 
-// }
 
-// async function cname() {
-//     console.log(await getContactName("64626fe5d7b6aa16fabe1088", "09151232765"));
-// }
-// cname();
 module.exports = getPVChat;
