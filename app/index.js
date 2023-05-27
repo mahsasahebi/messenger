@@ -37,7 +37,6 @@ class Application {
 
     setupRoutesAndMiddlewares(){
         app.use(express.json());
-        app.use(Auth);
         app.use(userRoutes);
         app.use(chatroomRoutes);
         app.use(messageRoutes);
