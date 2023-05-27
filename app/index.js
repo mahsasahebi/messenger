@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
-const UserModel = require("../app/models/UserModel");
-const ChatroomModel = require("../app/models/ChatroomModel");
-const MessageModel = require("../app/models/MessageModel");
+
+
+
 const express=require("express");
 const app = express();
 const userRoutes= require("./routes/userRoutes");
+const chatroomRoutes= require("./routes/chatroomRoutes");
+const messageRoutes= require("./routes/messageRoutes");
+const Auth=require("./http/middlewares/Auth");
 
 
 
@@ -34,111 +37,13 @@ class Application {
 
     setupRoutesAndMiddlewares(){
         app.use(express.json());
+        app.use(Auth);
         app.use(userRoutes);
+        app.use(chatroomRoutes);
+        app.use(messageRoutes);
     }
 
 }
-
-
-
-
-
-
-
-
-
-async function createPvChatroom(thisUserId, anotherUserId) {
-    let anotherUser = await UserModel.findById(anotherUserId).select({ name: 1 });
-    console.log(anotherUser, anotherUser.name);
-    const newPvChatroom = new ChatroomModel({
-        type: "PV",
-        members: [thisUserId, anotherUserId],
-        title: ""
-    });
-    const createdChatroom = await newPvChatroom.save();
-    console.log("PV chatroom created", createdChatroom);
-
-}
-//createPvChatroom("64626fd1d7b6aa16fabe1085","646272ccb1d7db90ecfff9b8");
-
-async function createTextMessage(text, userId, chatroomId) {
-    const newMessage = new MessageModel({
-        text: text,
-        type: 'text',
-        userId: userId,
-        chatroomId: chatroomId
-    });
-    const createdMessage = await newMessage.save();
-    console.log("message created", createdMessage);
-}
-
-//createTextMessage("khoobi?","646272ccb1d7db90ecfff9b8","64668c96a18790707b10e452");
-
-async function createContact(userId, name, mobile) {
-    const foundUser = await UserModel.find({ mobile: mobile });
-    console.log("foundUser is:", foundUser);
-    if (foundUser.length <= 0) {
-        console.log("This mobile didn't register");
-        process.exit();
-    }
-    else {
-        const condition = await isContact(userId, mobile);
-        console.log(condition);
-        if (condition) {
-            console.log("contact exists");
-            process.exit();
-        }
-
-        else {
-            const user = await UserModel.findById(userId);
-            user.contacts.push({ name: name, mobile: mobile });
-            await user.save();
-            console.log("contact created");
-            process.exit();
-        }
-
-    }
-
-
-
-}
-
-async function isContact(userId, mobile) {
-    const matchedContacts = await UserModel.find({ _id: userId, contacts: { $elemMatch: { mobile: mobile } } }).count();
-
-    console.log(matchedContacts);
-    if (matchedContacts > 0)
-        return true;
-    else
-        return false;
-}
-
-
-//createContact("64626fe5d7b6aa16fabe1088","elahe","09151232765");
-
-
-async function removeContact(userId, contactId) {
-    const selectedUser = await UserModel.findById(userId);
-    await selectedUser.contacts.pull({ _id: contactId });
-    await selectedUser.save();
-    console.log("contact deleted");
-    process.exit();
-}
-//removeContact("64595424fbfce9e0b7873374","645bf7372461ccbada67ce7a");
-
-
-async function editContact(userId, contactId, name, mobile) {
-
-    //const selectedUser = await UserModel.findById(userId);
-    const result = await UserModel.updateOne(
-        { _id: userId, "contacts._id": contactId },
-        { $set: { "contacts.$.name": name, "contacts.$.mobile": mobile } });
-    console.log(result);
-
-    process.exit();
-}
-//editContact("64595424fbfce9e0b7873374","645bf79541d28a32514df9dd","mahshid","09155037651");
-
 
 
 
