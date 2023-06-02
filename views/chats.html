@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="main.css" />
+  <link rel="stylesheet" href="../public/css/chats.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css" />
   <link rel="stylesheet"
@@ -90,7 +90,7 @@
                 </div>
 
 
-                <div class="chat-user-panel">
+                <div class="chat-user-panel"  id="chatrooms">
                   <div class="pb-3 d-flex flex-column navigation-mobile pagination-scrool chat-user-scroll">
 
 
@@ -99,7 +99,7 @@
                         <div class="d-flex pl-0">
 
                           <div>
-                            <p class="margin-auto fw-400 text-dark-75">Tessa Nau</p>
+                            <p class="margin-auto fw-400 text-dark-75"></p>
 
                           </div>
                         </div>
@@ -207,7 +207,32 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/jquery.perfect-scrollbar/0.6.7/js/min/perfect-scrollbar.jquery.min.js"></script>
-  <script src="main.js"></script>
+  <script src="../public/js/chats.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    axios.get("http://127.0.0.1:3000/getChats")
+    .then((res)=>{
+      document.querySelector("#chatrooms").innerHTML = res.data.map((item)=>`
+      
+                  <div class="pb-3 d-flex flex-column navigation-mobile pagination-scrool chat-user-scroll">
+
+
+                    <div class="chat-item d-flex pl-3 pr-0 pt-3 pb-3">
+                      <div class="w-100">
+                        <div class="d-flex pl-0">
+
+                          <div>
+                            <p class="margin-auto fw-400 text-dark-75">${item}</p>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                `).join("");
+    })
+    .catch((err)=>{console.log(err.message);})
+  </script>
 </body>
 
 </html>

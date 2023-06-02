@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>CodePen - Sign up / Login Form</title>
+	<link rel="stylesheet" href="../public/css/signup-login-style.css">
+
+</head>
+
+<body>
+	<!-- partial:index.partial.html -->
+	<!DOCTYPE html>
+	<html>
+
+	<head>
+		<title>Slide Navbar</title>
+		<!--<link rel="stylesheet" type="text/css" href="slide navbar style.css">-->
+		<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
+	</head>
+
+	<body>
+		<div class="main">
+			<input type="checkbox" id="chk" aria-hidden="true">
+
+			<div class="signup" id="signup">
+				<form method="POST" onsubmit="return signupForm()">
+					<label for="chk" aria-hidden="true" id="signuptitle">ثبت نام</label>
+					<input type="text" name="name" id="name" placeholder="نام" required="">
+					<input type="text" name="tel" id="tel" placeholder="موبایل" required="">
+					<input type="password" name="pass" id="pass" placeholder="رمز عبور" required="">
+					<input type="password" name="repeatPass" id="repeatPass" placeholder="تکرار رمز عبور" required="">
+					<button type="submit">ثبت نام</button>
+					<div id="signupMessages"></div>
+				</form>
+			</div>
+
+			<div class="login">
+				<form method="POST" onsubmit="return loginForm()">
+					<label for="chk" aria-hidden="true" id="logintitle">ورود</label>
+					<input type="text" name="mobile" id="mobile" placeholder="موبایل" required="">
+					<input type="password" name="password" id="password" placeholder="رمز عبور" required="">
+					<button type="submit">ورود</button>
+					<div id="loginMessages"></div>
+				</form>
+			</div>
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+		<script>
+			function loginForm() {
+				try {
+					const mobile = document.querySelector("#mobile").value;
+					const password = document.querySelector("#password").value;
+					console.log(mobile, password);
+					if (!mobile || !password) {
+						document.getElementById("loginMessages").innerHTML = "وارد کردن همه ی مقادیر الزامیست";
+						return false;
+					}
+					const body = {
+						"mobile": mobile,
+						"password": password
+					}
+					console.log(body);
+					axios.post("http://127.0.0.1:3000/login/", body)
+						.then((res) => { 
+							console.log("با موفقیت وارد شدید");
+							window.location.href = "./chats.html";
+					 })
+						.catch(err => { console.log(err.message); })
+					//return false;
+				} catch (err) {
+					console.log(err);
+					return false;
+				}
+
+			}
+			function signupForm() {
+				try {
+
+					const pass = document.getElementById("pass").value;
+					const repeatPass = document.getElementById("repeatPass").value;
+					if (pass != repeatPass) {
+						document.getElementById("signupMessages").innerHTML = "تکرار پسورد صحیح نیست";
+						return false;
+					}
+					const name = document.querySelector("#name").value;
+					const mobile = document.querySelector("#tel").value;
+					const password = document.querySelector("#pass").value;
+					console.log(name , mobile , password);
+					if (!name || !mobile || !password) {
+						document.getElementById("signupMessages").innerHTML = "وارد کردن همه ی مقادیر الزامیست";
+						return false;
+					}
+					const body = {
+						"name" : name,
+						"mobile": mobile,
+						"password": password
+					}
+					console.log(body);
+					axios.post("http://127.0.0.1:3000/register/", body)
+						.then((res) => { 
+							console.log("ثبت نام با موفقیت انجام شد");
+							window.location.href = "./chats.html";
+						})
+						.catch(err => { console.log(err.message); })
+					//return false;
+				} catch (err) {
+					console.log(err);
+					return false;
+				}
+
+			}
+
+		</script>
+	</body>
+
+	</html>
+	<!-- partial -->
+
+</body>
+
+</html>

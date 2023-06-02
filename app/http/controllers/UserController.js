@@ -6,6 +6,7 @@ const config = require("config");
 const { Aggregate } = require('mongoose');
 
 
+
 module.exports = new class UserController {
 
     async register(req, res) {
@@ -65,9 +66,18 @@ module.exports = new class UserController {
         };
         const token = jwt.sign(data, config.get("jwtPrivateKey"));
         console.log(token);
+        const response = await fetch(`http://localhost:3000/getChats/?userId=${user._id}`,{mode: 'no-cors'});
+        const chats = await response.json();
+        
 
-        const chats = await MessageModel.find({}, { _id: 0, created_at: 1 })
-            .populate({ path: "chatroomId", match: { members: user._id } })
+        console.log(chats);
+        return res.cookie("x-auth-token", token).status(200).send({ message: "ورود با موفقیت انجام شد" , chats: chats});
+    }
+
+async getChats(req,res){
+    console.log(req.query.userId);
+    const chats = await MessageModel.find({}, { _id: 0, created_at: 1 })
+            .populate({ path: "chatroomId", match: { members: req.query.userId } })
             .sort({ "created_at": -1 });
         console.log(chats);
         const chatlist = [];
@@ -77,7 +87,7 @@ module.exports = new class UserController {
         let mobile;
         let contacts;
         let flag;
-        chats.chatroomId
+        let user = await UserModel.findOne({ _id: req.query.userId });
         for (let i = 0; i < chats.length; i++) {
             flag = 0;
             chatroom = chats[i].chatroomId;
@@ -86,7 +96,7 @@ module.exports = new class UserController {
             if (chatroom != null) {
                 for (let j = 0; j < 2; j++) {
 
-                    if (String(chatroom.members[j]) != String(user._id)) {
+                    if (String(chatroom.members[j]) != String(req.query.userId)) {
 
                         memberId = chatroom.members[j];
                         mobileObj = await UserModel.findOne({ _id: memberId }, { _id: 0, mobile: 1 });
@@ -115,11 +125,18 @@ module.exports = new class UserController {
 
             }
         }
-        return res.header("x-auth-token", token).status(200).send({ message: "ورود با موفقیت انجام شد", chatLength: chatlist.length, chats: chatlist });
-    }
+        return res.status(200).json({ message: "لیست چت ها با موفقیت دریافت شد", chatLength: chatlist.length, chats: chatlist });
+}
 
 
-
+async getContacts(req,res){
+    const contactsObj = await UserModel.findOne({_id : req.body.userId},{contacts:1 , _id:0});
+    console.log(contactsObj);
+    if(contactsObj.contacts)
+        return res.status(200).send({contacts: contactsObj.contacts});
+    else
+        return res.status(200).send({message : "هیچ مخاطبی موجود نیست"});
+}
 
 
 
@@ -172,7 +189,6 @@ module.exports = new class UserController {
 
     async editContact(req, res) {
 
-
         const result = await UserModel.updateOne(
             { _id: req.body.userId, contacts: { $elemMatch: { _id: req.body.contactId } } },
             { $set: { "contacts.$.name": req.body.name, "contacts.$.mobile": req.body.mobile } });
@@ -186,7 +202,7 @@ module.exports = new class UserController {
         }
 
     }
-    //editContact("64595424fbfce9e0b7873374","645bf79541d28a32514df9dd","mahshid","09155037651");
+    
 
 
 
@@ -205,12 +221,6 @@ module.exports = new class UserController {
             return res.status(500).send({ message: "خطایی سمت سرور اتفاق افتاده است" });
 
     }
-    //removeContact("64595424fbfce9e0b7873374","645bf7372461ccbada67ce7a");
-
-
-
-
-
 
 
 

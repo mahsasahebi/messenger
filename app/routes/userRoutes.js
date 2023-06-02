@@ -8,7 +8,11 @@ const Auth = require('../http/middlewares/Auth');
 
 router.post('/register', UserController.register);
 
-router.get('/login', Auth, UserController.login);
+router.post('/login', Auth, UserController.login);
+
+router.get('/getChats', UserController.getChats);
+
+router.get('/getContacts', Auth, UserController.getContacts);
 
 router.post('/createContact', Auth , UserController.createContact);
 

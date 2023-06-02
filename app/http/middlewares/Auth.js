@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const config = require("config");
 
 module.exports = function (req, res, next) {
-    const token = req.header("x-auth-token");
+    const token = req.cookie("x-auth-token");
     if (!token)
         res.status(401).send("شما اجازه دسترسی به این دیتا را ندارید");
     try {
@@ -10,6 +10,6 @@ module.exports = function (req, res, next) {
         req.user = user;
         next();
     } catch (ex) {
-        res.status(401).send("شما اجازه دسترسی به این دیتا را ندارید");
+        res.status(401).send("...شما اجازه دسترسی به این دیتا را ندارید");
     }
 }

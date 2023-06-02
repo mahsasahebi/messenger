@@ -7,7 +7,7 @@ const Auth = require("../http/middlewares/Auth");
 
 router.post('/createTextMessage',Auth, MessageController.createTextMessage);
 
-
+router.get('/getMessages',Auth, MessageController.getMessages);
 
 
 
