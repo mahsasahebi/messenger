@@ -1,14 +1,15 @@
 const mongoose = require("mongoose");
-const cors = require("cors");
 
 
 
 const express=require("express");
 const app = express();
 express.static("../public");
+const cors = require("cors");
 const userRoutes= require("./routes/userRoutes");
 const chatroomRoutes= require("./routes/chatroomRoutes");
 const messageRoutes= require("./routes/messageRoutes");
+const cookieParser = require("cookie-parser");
 
 
 
@@ -38,8 +39,10 @@ class Application {
     }
 
     setupRoutesAndMiddlewares(){
+        
         app.use(express.json());
-        app.use(cors);
+        app.use(cookieParser());
+        app.use(cors());
         app.use(userRoutes);
         app.use(chatroomRoutes);
         app.use(messageRoutes);

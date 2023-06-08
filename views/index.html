@@ -24,7 +24,7 @@
 			<input type="checkbox" id="chk" aria-hidden="true">
 
 			<div class="signup" id="signup">
-				<form method="POST" onsubmit="return signupForm()">
+				<form method="POST" onsubmit="return signupForm();">
 					<label for="chk" aria-hidden="true" id="signuptitle">ثبت نام</label>
 					<input type="text" name="name" id="name" placeholder="نام" required="">
 					<input type="text" name="tel" id="tel" placeholder="موبایل" required="">
@@ -36,14 +36,17 @@
 			</div>
 
 			<div class="login">
-				<form method="POST" onsubmit="return loginForm()">
+				<form method="POST" onsubmit="return loginForm();">
 					<label for="chk" aria-hidden="true" id="logintitle">ورود</label>
 					<input type="text" name="mobile" id="mobile" placeholder="موبایل" required="">
 					<input type="password" name="password" id="password" placeholder="رمز عبور" required="">
 					<button type="submit">ورود</button>
 					<div id="loginMessages"></div>
 				</form>
+				
+
 			</div>
+			
 		</div>
 		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 		<script>
@@ -61,7 +64,7 @@
 						"password": password
 					}
 					console.log(body);
-					axios.post("http://127.0.0.1:3000/login/", body)
+					axios.post("http://127.0.0.1:3000/login", body)
 						.then((res) => { 
 							console.log("با موفقیت وارد شدید");
 							window.location.href = "./chats.html";
@@ -97,7 +100,7 @@
 						"password": password
 					}
 					console.log(body);
-					axios.post("http://127.0.0.1:3000/register/", body)
+					axios.post("http://127.0.0.1:3000/register", body)
 						.then((res) => { 
 							console.log("ثبت نام با موفقیت انجام شد");
 							window.location.href = "./chats.html";

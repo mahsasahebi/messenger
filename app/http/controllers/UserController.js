@@ -4,10 +4,25 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const { Aggregate } = require('mongoose');
+const path = require('path');
+const fs = require('fs');
+const cookieParser = require("cookie-parser");
+
 
 
 
 module.exports = new class UserController {
+
+
+    root(req,res){
+       
+        console.log("welcome");
+        return res.send(fs.readFileSync(path.join(__dirname, '../../../views', 'index.html')));
+    }
+
+
+
+
 
     async register(req, res) {
         console.log(req.body);
@@ -40,7 +55,7 @@ module.exports = new class UserController {
         };
         const token = jwt.sign(data, config.get("jwtPrivateKey"));
         console.log(token);
-        return res.header("x-auth-token", token).status(200).send({ message: "ثبت نام با موفقیت انجام شد" });
+        return res.cookie("x-auth-token", token).status(200).send({ message: "ثبت نام با موفقیت انجام شد" });
     }
 
 
