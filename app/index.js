@@ -4,21 +4,22 @@ const mongoose = require("mongoose");
 
 const express=require("express");
 const app = express();
-express.static("../public");
+//express.static("../public");
 const cors = require("cors");
 const userRoutes= require("./routes/userRoutes");
 const chatroomRoutes= require("./routes/chatroomRoutes");
 const messageRoutes= require("./routes/messageRoutes");
 const cookieParser = require("cookie-parser");
-
+const bdp = require('body-parser')
 
 
 
 class Application {
     constructor() {
+        this.setupRoutesAndMiddlewares();
         this.setupExpressServer();
         this.setupMongoose();
-        this.setupRoutesAndMiddlewares();
+        
     }
     
     setupExpressServer() {
@@ -38,11 +39,12 @@ class Application {
             });
     }
 
-    setupRoutesAndMiddlewares(){
-        
-        app.use(express.json());
+    setupRoutesAndMiddlewares(){     
+        app.use(bdp.json())
         app.use(cookieParser());
         app.use(cors());
+        app.use(express.urlencoded())
+        app.use(express.static(__dirname + '/../public/'));
         app.use(userRoutes);
         app.use(chatroomRoutes);
         app.use(messageRoutes);

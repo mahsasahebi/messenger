@@ -4,8 +4,8 @@ const cookieParser = require("cookie-parser");
 
 
 module.exports = function (req, res, next) {
-    console.log(req.cookies);
-    const token = req.cookies("x-auth-token");
+    //console.log(req.cookies);
+    const token = req.cookies["token"];
     console.log(token);
     if (!token)
         return res.status(401).send("شما اجازه دسترسی به این دیتا را ندارید");

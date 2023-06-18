@@ -6,7 +6,9 @@ const config = require("config");
 const { Aggregate } = require('mongoose');
 const path = require('path');
 const fs = require('fs');
-const cookieParser = require("cookie-parser");
+const { json } = require('body-parser');
+const lodash = require('lodash');
+
 
 
 
@@ -16,11 +18,15 @@ module.exports = new class UserController {
 
     root(req,res){
        
-        console.log("welcome");
-        return res.send(fs.readFileSync(path.join(__dirname, '../../../views', 'index.html')));
+        //console.log("welcome");
+        return res.sendFile(path.join(__dirname, '../../../views', 'index.html'));
     }
 
-
+    chats(req,res){
+       
+        //console.log("chats");
+        return res.sendFile(path.join(__dirname, '../../../views', 'chats.html'));
+    }
 
 
 
@@ -81,20 +87,16 @@ module.exports = new class UserController {
         };
         const token = jwt.sign(data, config.get("jwtPrivateKey"));
         console.log(token);
-        const response = await fetch(`http://localhost:3000/getChats/?userId=${user._id}`,{mode: 'no-cors'});
-        const chats = await response.json();
-        
-
-        console.log(chats);
-        return res.cookie("x-auth-token", token).status(200).send({ message: "ورود با موفقیت انجام شد" , chats: chats});
+        //console.log(chats);
+        return res.cookie("token", token).redirect('/chats');
     }
 
-async getChats(req,res){
-    console.log(req.query.userId);
+async getChatRooms(req,res){
+    //console.log(req.query.userId);
     const chats = await MessageModel.find({}, { _id: 0, created_at: 1 })
             .populate({ path: "chatroomId", match: { members: req.query.userId } })
             .sort({ "created_at": -1 });
-        console.log(chats);
+        //console.log(chats);
         const chatlist = [];
         let chatroom;
         let memberId;
@@ -106,7 +108,7 @@ async getChats(req,res){
         for (let i = 0; i < chats.length; i++) {
             flag = 0;
             chatroom = chats[i].chatroomId;
-            console.log(chatroom);
+            //console.log(chatroom);
 
             if (chatroom != null) {
                 for (let j = 0; j < 2; j++) {
@@ -116,15 +118,16 @@ async getChats(req,res){
                         memberId = chatroom.members[j];
                         mobileObj = await UserModel.findOne({ _id: memberId }, { _id: 0, mobile: 1 });
                         mobile = mobileObj.mobile;
-                        console.log(mobile);
+                        //console.log(mobile);
                         contacts = user.contacts;
 
                         for (let k = 0; k < contacts.length; k++) {
 
                             if (contacts[k].mobile == mobile) {
                                 flag = 1;
-                                if(!chatlist.includes(contacts[k].name)){
-                                    chatlist.push(contacts[k].name);
+                                //console.log(chatlist.find(item => item.name === `${contacts[k].name}`  ));
+                                if(!chatlist.find(item => item.name === `${contacts[k].name}`  )){
+                                    chatlist.push(JSON.parse(`{"name":"${contacts[k].name}","id":"${memberId}"}`));
                                     break;
                                 }
                             }
@@ -134,19 +137,20 @@ async getChats(req,res){
             }
             else
                 continue;
-            console.log(flag);
-            if ((flag == 0) && (!chatlist.includes(mobile))) {
-                chatlist.push(mobile);
+            //console.log(flag);
+
+            if ((flag == 0) && (!chatlist.find(item => item.name === `${mobile}`  ))) {
+                chatlist.push(JSON.parse(`{"name":"${mobile}","id":"${memberId}"}`));
 
             }
         }
-        return res.status(200).json({ message: "لیست چت ها با موفقیت دریافت شد", chatLength: chatlist.length, chats: chatlist });
+        return res.status(200).send({ message: "لیست چت ها با موفقیت دریافت شد", chatLength: chatlist.length, chats: chatlist });
 }
 
 
 async getContacts(req,res){
     const contactsObj = await UserModel.findOne({_id : req.body.userId},{contacts:1 , _id:0});
-    console.log(contactsObj);
+    //console.log(contactsObj);
     if(contactsObj.contacts)
         return res.status(200).send({contacts: contactsObj.contacts});
     else

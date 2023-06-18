@@ -9,9 +9,11 @@ router.get('/',UserController.root);
 
 router.post('/register', UserController.register);
 
-router.post('/login', Auth , UserController.login);
+router.post('/login', UserController.login);
 
-router.get('/getChats', UserController.getChats);
+router.get('/getChatRooms', UserController.getChatRooms);
+
+router.get('/chats',Auth, UserController.chats);
 
 router.get('/getContacts', Auth, UserController.getContacts);
 

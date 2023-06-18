@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>CodePen - Sign up / Login Form</title>
-	<link rel="stylesheet" href="../public/css/signup-login-style.css">
+	<link rel="stylesheet" href="css/signup-login-style.css">
 
 </head>
 
@@ -24,7 +24,7 @@
 			<input type="checkbox" id="chk" aria-hidden="true">
 
 			<div class="signup" id="signup">
-				<form method="POST" onsubmit="return signupForm();">
+				<form method="POST" onsubmit="signupForm(); return false;">
 					<label for="chk" aria-hidden="true" id="signuptitle">ثبت نام</label>
 					<input type="text" name="name" id="name" placeholder="نام" required="">
 					<input type="text" name="tel" id="tel" placeholder="موبایل" required="">
@@ -36,10 +36,10 @@
 			</div>
 
 			<div class="login">
-				<form method="POST" onsubmit="return loginForm();">
+				<form method="POST" action="/login">
 					<label for="chk" aria-hidden="true" id="logintitle">ورود</label>
-					<input type="text" name="mobile" id="mobile" placeholder="موبایل" required="">
-					<input type="password" name="password" id="password" placeholder="رمز عبور" required="">
+					<input type="text" name="mobile" id="mobile" placeholder="موبایل" required>
+					<input type="password" name="password" id="password" placeholder="رمز عبور" required>
 					<button type="submit">ورود</button>
 					<div id="loginMessages"></div>
 				</form>
@@ -67,15 +67,20 @@
 					axios.post("http://127.0.0.1:3000/login", body)
 						.then((res) => { 
 							console.log("با موفقیت وارد شدید");
-							window.location.href = "./chats.html";
+							//return false;
+							window.location.href = "http://127.0.0.1:3000/chats";
+							
 					 })
-						.catch(err => { console.log(err.message); })
+						.catch(err => { 
+							console.log(err.message);
+							return false;
+						})
 					//return false;
 				} catch (err) {
 					console.log(err);
 					return false;
 				}
-
+//return false;
 			}
 			function signupForm() {
 				try {
@@ -103,10 +108,14 @@
 					axios.post("http://127.0.0.1:3000/register", body)
 						.then((res) => { 
 							console.log("ثبت نام با موفقیت انجام شد");
-							window.location.href = "./chats.html";
+							//return false;
+							window.location.href = "http://127.0.0.1:3000/chats";
 						})
-						.catch(err => { console.log(err.message); })
-					//return false;
+						.catch(err => { 
+							console.log(err.message);
+							return false;
+						 })
+					
 				} catch (err) {
 					console.log(err);
 					return false;
