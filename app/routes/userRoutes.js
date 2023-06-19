@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('../http/controllers/UserController');
 const Auth = require('../http/middlewares/Auth');
-const cookieParser = require('cookie-parser');
+
 
 
 router.get('/',UserController.root);

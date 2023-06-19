@@ -9,16 +9,16 @@ async getMessages(req,res){
     const contactId=req.query.contactId;
     console.log(userId,"-",contactId);
     const chatroomIdObj=await ChatroomModel.findOne({$and: [{members:userId},{members:contactId}]},{_id:1});
+    console.log(chatroomIdObj);
     
     const chatroomId = chatroomIdObj._id;
-    console.log(chatroomIdObj);
     console.log(chatroomId);
    
 
     const messages = await MessageModel.find({chatroomId : chatroomId},{text:1 , userId:1, _id:0});
-    //console.log(messages);
+    console.log(messages);
     if(messages.length > 0)
-         return res.status(200).send({message: messages});
+         return res.status(200).json({message:messages});
     else
          return res.status(200).send({message: "هیچ پیامی موجود نیست"});
 }
